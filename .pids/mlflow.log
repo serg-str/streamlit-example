@@ -1,0 +1,28 @@
+Traceback (most recent call last):
+  File "/workspaces/streamlit-example/.venv/bin/mlflow", line 8, in <module>
+    sys.exit(cli())
+             ^^^^^
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/click/core.py", line 1130, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/click/core.py", line 1055, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/click/core.py", line 1657, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/click/core.py", line 1404, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/click/core.py", line 760, in invoke
+    return __callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/mlflow/cli.py", line 399, in server
+    from mlflow.server import _run_server
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/mlflow/server/__init__.py", line 9, in <module>
+    from flask import Flask, Response, send_from_directory
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/flask/__init__.py", line 19, in <module>
+    from . import json
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/flask/json/__init__.py", line 15, in <module>
+    from itsdangerous import json as _json
+ImportError: cannot import name 'json' from 'itsdangerous' (/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/itsdangerous/__init__.py)

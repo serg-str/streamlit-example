@@ -1,0 +1,29 @@
+INFO:     Will watch for changes in these directories: ['/workspaces/streamlit-example']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [16909] using WatchFiles
+INFO:     Started server process [16969]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:34158 - "POST /predict HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'ml_example/ml_training/pipeline/train.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [16969]
+WARNING:  WatchFiles detected changes in 'ml_example/ml_training/pipeline/predict.py'. Reloading...
+INFO:     Started server process [17772]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'ml_example/ml_training/visualization/plot_features.py'. Reloading...
+INFO:     Started server process [17820]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Started server process [17847]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:42702 - "POST /predict HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [17847]
+INFO:     Stopping reloader process [16909]

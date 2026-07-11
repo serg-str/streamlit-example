@@ -1,42 +1,49 @@
-// Dev Container specification: https://containers.dev/implementors/json_reference/
-// For format details: https://aka.ms/devcontainer.json.
-// For config options, README at: https://github.com/devcontainers/templates/tree/main/src/postgres
 {
-  "name": "Python Example",
-  "dockerComposeFile": "docker-compose.yml",
-  "service": "app",
-  //"image":"mcr.microsoft.com/devcontainers/python:0-3.11",
-  //"dockerFile": "Dockerfile",
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "name": "lp-svc-airflow",
+
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+
   "features": {
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
-      "moby": true,
-      "installDockerBuildx": true,
-      "version": "latest",
-      "dockerDashComposeVersion": "v2"
+    "ghcr.io/devcontainers/features/azure-cli:1": {
+      "installUsingPython": false
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+
+  "forwardPorts": [8000, 8501, 5000],
+
+  "portsAttributes": {
+    "8501": {
+      "label": "Streamlit"
+    },
+    "8000": {
+      "label": "FastAPI"
+    },
+    "5000": {
+      "label": "MLflow"
     }
   },
-  // Features to add to the dev container. More info: https://containers.dev/features.
-  // "features": {},
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // This can be used to network with other containers or the host.
-  "forwardPorts": [
-    9080,
-    5432
-  ],
-  "postCreateCommand": "echo 'export PYTHONPATH=\"${containerWorkspaceFolder}\"' >> ~/.bashrc && ${containerWorkspaceFolder}/.devcontainer/post-create-command.sh",
+
   "customizations": {
     "vscode": {
       "extensions": [
-        "dbaeumer.vscode-eslint",
-        "ms-azuretools.vscode-docker",
         "ms-python.python",
         "ms-python.vscode-pylance",
-        "tamasfe.even-better-toml",
-        "timonwong.shellcheck"
-      ]
+        "ms-azuretools.vscode-docker",
+        "charliermarsh.ruff",
+        "redhat.vscode-yaml"
+      ],
+      "settings": {
+        "python.terminal.activateEnvironment": true
+      }
     }
-  }
-  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-  // "remoteUser": "root"
+  },
+
+  "postCreateCommand": "pipx install ruff && pipx install poetry && pipx install pip-audit && pipx install pre-commit && poetry config virtualenvs.in-project true --local && if [ -f .pre-commit-config.yaml ]; then pre-commit install; fi",
+
+  "postStartCommand": "poetry config virtualenvs.in-project true --local && poetry install --no-interaction",
+
+  "remoteUser": "vscode"
 }

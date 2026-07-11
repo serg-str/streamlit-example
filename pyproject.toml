@@ -1,65 +1,43 @@
 [tool.poetry]
-name = "python-example"
+name = "streamlit-example"
 version = "0.1.0"
-description = "Test project to show a complete working example."
-authors = ["Shuai Peng <speng@acerta.ai>","Patrick Roy <proy@acerta.ai>","Daniel Ferrari <dferrari@acerta.ai>", "Alan Tan <atan@acerta.ai>", "Thomas Brown <tbrown@acerta.ai>"]
+description = "Unified FastAPI + Streamlit + ML project template"
+authors = ["Project Maintainers"]
+package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.11"
-uvicorn = { version = "^0.22.0", extras = ["standard"] }
-pydantic = {version = "^1.10.2", extras = ["dotenv"]}
-fastapi = "^0.95.2"
-httpx = "*"
-requests = "^2.23.0"
-passlib = {extras = ["bcrypt"], version = "^1.7.2"}
-tenacity = "^6.1.0"
-gunicorn = "^20.1.0"
-psycopg2-binary = "^2.9.5"
-alembic = "^1.11.0"
-pyjwt = "2.5.0"
-SQLAlchemy = {version = "^2.0.1", extras = ["mypy", "asyncio"]}
-kafka-python = "^2.0.2"
-databricks-sql-connector="^2.3.0"
-confluent-kafka= "^2.0.1"
-celery = {version="^5.2.0",optional=true}
-python-multipart = {version= "^0.0.5",optional=true}
-email-validator = {version="^1.0.5",optional=true}
-jinja2 = {version="^2.11.2",optional=true}
-emails = {version="^0.6.0",optional=true}
-raven = {version="^6.10.0",optional=true}
-prometheus-client ={version= "^0.14.1",optional=true}
-prometheus-fastapi-instrumentator = {version="5.8.1",optional=true}
-python-jose = {extras = ["cryptography"], version = "^3.1.0",optional=true}
-watchdog = {version="^2.1.5",optional=true}
-redis = {version="^4.5.5",optional=true}
-pymongo = {version="^4.3.3",optional=true}
-ruff = "^0.0.284"
-
+python = ">=3.11,<3.12"
+fastapi = "^0.115.0"
+uvicorn = { version = "^0.30.0", extras = ["standard"] }
+streamlit = "^1.38.0"
+pydantic = "^2.8.0"
+python-dotenv = "^1.0.1"
+numpy = ">=1.26,<2.0"
+pandas = "^2.2.2"
+scikit-learn = "^1.5.1"
+joblib = "^1.4.2"
+matplotlib = "^3.9.2"
+plotly = "^5.24.1"
+pyarrow = "^16.1.0"
+lightgbm = "^4.5.0"
+mlflow = "^2.16.2"
 
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^3.3.2"
-mypy = "^0.910"
-black = "^19.10b0"
-isort = "^4.3.21"
-autoflake = "^1.3.1"
-flake8 = "^3.7.9"
-pytest = "^7.4.0"
-sqlalchemy-stubs = "^0.3"
-pytest-cov = "^4.1.0"
-jupyter = "^1.0.0"
-markupsafe="2.0.1"
-
-[tool.poetry.extras]
-extras = ["celery","python-multipart","email-validator","jinja2","emails","raven","prometheus-client","prometheus-fastapi-instrumentator","python-jose","watchdog","pymongo","redis"]
-
-[tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-line_length = 88
-[build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+pytest = "^8.3.2"
+httpx = "^0.27.0"
+ruff = "^0.6.1"
+dvc = "^3.61.0"
 
 [tool.ruff]
-line-length = 120
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"

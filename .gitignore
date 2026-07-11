@@ -11,3 +11,5 @@ env
 .vscode
 .DS_Store
 *.db
+mlruns
+.dvc/storage
