@@ -1,4 +1,4 @@
-# Acerta Python Example
+# Python Repo Example
 
 ## Background
 
@@ -42,7 +42,7 @@ Once you fetch this repo down to your local development environment, change the 
 ```
   "name": "not python-example anymore",
   "version": "0.1.0",
-  "description": "New repo that follows Acerta standard python requirements",
+  "description": "New repo that follows standard python requirements",
   remove all the unnecessary packages from the [tool.poetry.dependencies]
 ```
 
