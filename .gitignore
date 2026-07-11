@@ -1,0 +1,13 @@
+.mypy_cache
+.coverage
+htmlcov
+__pycache__
+app.egg-info
+/test-reports
+
+.env
+.venv
+env
+.vscode
+.DS_Store
+*.db
