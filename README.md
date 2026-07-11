@@ -111,3 +111,15 @@ make test
 make lint
 make format
 ```
+
+## Data Source and License
+
+This project uses data derived from the Kaggle competition:
+
+- https://www.kaggle.com/competitions/playground-series-s4e3
+
+Data usage, redistribution, and derivative work rights are governed by the
+competition rules and Kaggle terms shown on that page.
+
+Before reusing this repository data outside local experimentation, review and
+comply with the source dataset and platform licensing terms.
