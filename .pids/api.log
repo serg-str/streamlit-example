@@ -1,29 +1,33 @@
 INFO:     Will watch for changes in these directories: ['/workspaces/streamlit-example']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [16909] using WatchFiles
-INFO:     Started server process [16969]
+INFO:     Started reloader process [5611] using WatchFiles
+INFO:     Started server process [5674]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     127.0.0.1:34158 - "POST /predict HTTP/1.1" 200 OK
-WARNING:  WatchFiles detected changes in 'ml_example/ml_training/pipeline/train.py'. Reloading...
+INFO:     127.0.0.1:52580 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     154.64.72.193:0 - "GET /docs HTTP/1.1" 200 OK
+INFO:     154.64.72.193:0 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40982 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     154.64.72.193:0 - "GET /serving-model HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37272 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37282 - "GET /serving-model HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39598 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39610 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39622 - "GET /serving-model HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39634 - "POST /predict HTTP/1.1" 200 OK
+INFO:     154.64.72.193:0 - "POST /serving-model HTTP/1.1" 200 OK
+INFO:     154.64.72.193:0 - "GET /serving-model HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54636 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41974 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41988 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46304 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46312 - "GET /serving-model HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46322 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46332 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46334 - "GET /serving-model HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46340 - "POST /predict HTTP/1.1" 200 OK
 INFO:     Shutting down
 INFO:     Waiting for application shutdown.
 INFO:     Application shutdown complete.
-INFO:     Finished server process [16969]
-WARNING:  WatchFiles detected changes in 'ml_example/ml_training/pipeline/predict.py'. Reloading...
-INFO:     Started server process [17772]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'ml_example/ml_training/visualization/plot_features.py'. Reloading...
-INFO:     Started server process [17820]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Started server process [17847]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     127.0.0.1:42702 - "POST /predict HTTP/1.1" 200 OK
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [17847]
-INFO:     Stopping reloader process [16909]
+INFO:     Finished server process [5674]
+INFO:     Stopping reloader process [5611]

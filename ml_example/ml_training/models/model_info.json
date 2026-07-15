@@ -1,8 +1,8 @@
 {
   "name": "Steel Fault Predictor",
   "algorithm": "LightGBM",
-  "version": "v2.0",
-  "training_date": "2026-07-11",
+  "version": "2.0",
+  "training_date": "2026-07-14",
   "training_samples": 19219,
   "features": 6,
   "feature_columns": [
@@ -26,6 +26,10 @@
   "model_path": "ml_example/ml_training/models/steel_fault_lgbm.lgb",
   "mlflow_tracking_uri": "file:///workspaces/streamlit-example/mlruns",
   "mlflow_experiment": "steel-fault-predictor",
-  "mlflow_run_id": "b21c361bd6354430a12541bfa79c08e3",
-  "model_artifact_uri": "file:///workspaces/streamlit-example/mlruns/159767488818864796/b21c361bd6354430a12541bfa79c08e3/artifacts/model/steel_fault_lgbm.lgb"
+  "mlflow_run_id": "4bf7214cc6024c9b9abec5d83eb746ad",
+  "model_artifact_uri": "file:///workspaces/streamlit-example/mlruns/159767488818864796/4bf7214cc6024c9b9abec5d83eb746ad/artifacts/model",
+  "mlflow_registered_model_name": "steel_fault_predictor",
+  "mlflow_registered_model_alias": "version_2_0",
+  "mlflow_registered_model_version": "2",
+  "mlflow_registered_model_uri": "models:/steel_fault_predictor@version_2_0"
 }

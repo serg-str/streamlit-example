@@ -1,0 +1,31 @@
+{
+  "name": "Steel Fault Predictor",
+  "algorithm": "LightGBM",
+  "version": "3.0",
+  "training_date": "2026-07-13",
+  "training_samples": 19219,
+  "features": 6,
+  "feature_columns": [
+    "X_Range",
+    "Y_Range",
+    "Area_Perimeter_Ratio",
+    "Luminosity_Range",
+    "Volume",
+    "Thickness_Deviation"
+  ],
+  "mean_thickness": 76.21312243092773,
+  "classes": [
+    "Bumps",
+    "Dirtiness",
+    "K_Scatch",
+    "Other_Faults",
+    "Pastry",
+    "Stains",
+    "Z_Scratch"
+  ],
+  "model_path": "ml_example/ml_training/models/steel_fault_lgbm_v3.lgb",
+  "mlflow_tracking_uri": "file:///workspaces/streamlit-example/mlruns",
+  "mlflow_experiment": "steel-fault-predictor",
+  "mlflow_run_id": "d3f508a27950440e82eec040dbc16592",
+  "model_artifact_uri": "file:///workspaces/streamlit-example/mlruns/159767488818864796/d3f508a27950440e82eec040dbc16592/artifacts/model/steel_fault_lgbm_v3.lgb"
+}

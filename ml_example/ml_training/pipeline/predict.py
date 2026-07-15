@@ -9,11 +9,21 @@ import lightgbm as lgb
 import mlflow
 import pandas as pd
 
-MODEL_PATH = Path("ml_example/ml_training/models/steel_fault_lgbm.lgb")
-MODEL_INFO_PATH = Path("ml_example/ml_training/models/model_info.json")
+from ml_example.ml_training.pipeline.mlflow_registry import (
+    ensure_model_alias_for_run,
+    get_model_uri_by_version_alias,
+)
+from ml_example.ml_training.pipeline.model_versions import (
+    DEFAULT_MODEL_VERSION,
+    SERVING_CONFIG_PATH,
+    list_model_versions,
+    model_paths_for_version,
+    validate_model_version,
+)
+
 PREDICTION_LOG_PATH = Path("ml_example/reports/prediction_logs.csv")
 MLFLOW_DIR = Path("mlruns")
-MODEL_VERSION = "v2.0"
+MODEL_VERSION = DEFAULT_MODEL_VERSION
 PREDICTION_LOG_COLUMNS = [
     "timestamp",
     "source",
@@ -22,6 +32,31 @@ PREDICTION_LOG_COLUMNS = [
     "true_label",
     "latency_ms",
 ]
+
+
+def get_serving_model_version() -> str:
+    if not SERVING_CONFIG_PATH.exists():
+        return DEFAULT_MODEL_VERSION
+
+    try:
+        raw = json.loads(SERVING_CONFIG_PATH.read_text(encoding="utf-8"))
+        return validate_model_version(str(raw.get("active_version", DEFAULT_MODEL_VERSION)))
+    except (json.JSONDecodeError, ValueError):
+        return DEFAULT_MODEL_VERSION
+
+
+def set_serving_model_version(version: str) -> str:
+    active_version = validate_model_version(version)
+    SERVING_CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    SERVING_CONFIG_PATH.write_text(
+        json.dumps({"active_version": active_version}, indent=2),
+        encoding="utf-8",
+    )
+    return active_version
+
+
+def get_supported_model_versions() -> list[str]:
+    return list_model_versions()
 
 
 def configure_mlflow() -> None:
@@ -71,20 +106,41 @@ def preprocess_input_features(inputs: dict[str, float], mean_thickness: float) -
     }
 
 
-def _load_model(model_path: Path = MODEL_PATH):
-    if not model_path.exists() or not MODEL_INFO_PATH.exists():
+def _load_model(model_version: str = MODEL_VERSION):
+    validated_version = validate_model_version(model_version)
+    model_path, model_info_path = model_paths_for_version(validated_version)
+
+    if not model_path.exists() or not model_info_path.exists():
         from ml_example.ml_training.pipeline.train import train_model
 
-        train_model()
+        train_model(version=validated_version)
 
-    info = json.loads(MODEL_INFO_PATH.read_text(encoding="utf-8"))
-    resolved_model_path = _resolve_model_path(info, model_path)
-    model = lgb.Booster(model_file=str(resolved_model_path))
+    info = json.loads(model_info_path.read_text(encoding="utf-8"))
+    model = None
+
+    try:
+        model_uri = get_model_uri_by_version_alias(validated_version)
+        model = mlflow.lightgbm.load_model(model_uri=model_uri)
+    except Exception:
+        run_id = str(info.get("mlflow_run_id", "")).strip()
+        if run_id:
+            try:
+                ensure_model_alias_for_run(run_id=run_id, version_label=validated_version)
+                model_uri = get_model_uri_by_version_alias(validated_version)
+                model = mlflow.lightgbm.load_model(model_uri=model_uri)
+            except Exception:
+                model = None
+
+    if model is None:
+        resolved_model_path = _resolve_model_path(info, model_path)
+        model = lgb.Booster(model_file=str(resolved_model_path))
+
     return {
         "model": model,
         "mean_thickness": float(info["mean_thickness"]),
         "feature_columns": list(info["feature_columns"]),
         "classes": list(info["classes"]),
+        "model_version": str(info.get("version", validated_version)),
     }
 
 
@@ -158,9 +214,10 @@ def predict_fault_from_inputs(
     Maximum_of_Luminosity: float,
     Steel_Plate_Thickness: float,
     source: str = "UI",
+    model_version: str = MODEL_VERSION,
 ) -> dict[str, float | str]:
     start = perf_counter()
-    bundle = _load_model()
+    bundle = _load_model(model_version=model_version)
     model = bundle["model"]
     mean_thickness = float(bundle["mean_thickness"])
     feature_columns = list(bundle["feature_columns"])
@@ -205,6 +262,7 @@ def predict_fault_from_inputs(
     return {
         "prediction": prediction_label,
         "confidence": confidence,
+        "model_version": str(bundle["model_version"]),
         "latency_ms": latency_ms,
         "class_probabilities": class_probabilities,
         "X_Range": engineered["X_Range"],

@@ -1,5 +1,5 @@
 import csv
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from time import perf_counter
 
@@ -11,7 +11,8 @@ import streamlit as st
 
 from ml_example.ml_training.pipeline.predict import MODEL_VERSION, predict_fault_from_inputs
 
-RAW_TRAIN_PATH = Path("ml_example/data/raw/train.csv")
+DEFAULT_API_BASE_URL = "http://localhost:8000"
+TAB1_MODEL_VERSION = "2.0"
 PREDICTION_LOG_PATH = Path("ml_example/reports/prediction_logs.csv")
 TRAINING_PREDICTIONS_PATH = Path("ml_example/reports/training_predictions.csv")
 VISUALIZATION_DIR = Path("ml_example/visualization")
@@ -71,10 +72,32 @@ def load_prediction_logs(path: Path) -> pd.DataFrame:
     return df[columns]
 
 
-def load_train_data() -> pd.DataFrame:
-    if not RAW_TRAIN_PATH.exists():
-        raise FileNotFoundError(f"Missing data file: {RAW_TRAIN_PATH}")
-    return pd.read_csv(RAW_TRAIN_PATH)
+def load_train_data_from_api(api_base_url: str) -> pd.DataFrame:
+    response = requests.get(f"{api_base_url}/train-data", params={"limit": 50000}, timeout=20)
+    response.raise_for_status()
+
+    body = response.json()
+    rows = body.get("rows", [])
+    if not rows:
+        raise ValueError("FastAPI /train-data returned no rows")
+
+    return pd.DataFrame(rows)
+
+
+def get_serving_model_state(api_base_url: str) -> dict[str, object]:
+    response = requests.get(f"{api_base_url}/serving-model", timeout=10)
+    response.raise_for_status()
+    return response.json()
+
+
+def update_serving_model(api_base_url: str, version: str) -> dict[str, object]:
+    response = requests.post(
+        f"{api_base_url}/serving-model",
+        json={"version": version},
+        timeout=10,
+    )
+    response.raise_for_status()
+    return response.json()
 
 
 def default_input_values(df: pd.DataFrame) -> dict[str, float]:
@@ -177,15 +200,28 @@ page = st.sidebar.radio(
     ],
 )
 
-train_df = load_train_data()
+st.sidebar.header("API Settings")
+api_base_url = st.sidebar.text_input("FastAPI Base URL", value=DEFAULT_API_BASE_URL)
+
+try:
+    train_df = load_train_data_from_api(api_base_url)
+except (requests.RequestException, ValueError) as exc:
+    st.error(f"Unable to load train data from FastAPI: {exc}")
+    st.stop()
+
 defaults = default_input_values(train_df)
 
 if page == "Tab 1 - Direct ML Prediction":
     st.subheader("Direct ML Prediction (Streamlit Only)")
+    st.info(f"Model version for Tab 1: {TAB1_MODEL_VERSION}")
     payload = model_inputs("t1", defaults)
 
     if st.button("Predict", key="tab1_predict"):
-        result = predict_fault_from_inputs(**payload, source="UI")
+        result = predict_fault_from_inputs(
+            **payload,
+            source="UI",
+            model_version=TAB1_MODEL_VERSION,
+        )
         prediction = str(result["prediction"])
         confidence = float(result["confidence"])
         class_probs = result.get("class_probabilities", {})
@@ -210,13 +246,22 @@ elif page == "Tab 2 - API ML Prediction":
     st.subheader("API ML Prediction (Streamlit + FastAPI)")
     st.caption("Streamlit calls FastAPI /predict over HTTP")
 
-    payload = model_inputs("t2", defaults)
-    api_url = st.text_input("FastAPI Base URL", value="http://localhost:8000")
+    serving_state: dict[str, object] | None = None
+    try:
+        serving_state = get_serving_model_state(api_base_url)
+    except requests.RequestException as exc:
+        st.warning(f"Could not read current FastAPI serving model: {exc}")
 
+    if serving_state:
+        versions = [str(item) for item in serving_state.get("supported_versions", [])]
+        active_version = str(serving_state.get("active_version", MODEL_VERSION))
+        st.write(f"Current FastAPI served model version: {active_version}")
+
+    payload = model_inputs("t2", defaults)
     if st.button("Call Prediction API", key="tab2_predict"):
         start = perf_counter()
         try:
-            response = requests.post(f"{api_url}/predict", json=payload, timeout=10)
+            response = requests.post(f"{api_base_url}/predict", json=payload, timeout=10)
             latency_ms = (perf_counter() - start) * 1000
             st.markdown("### API Response")
             st.write("Status:", f"{response.status_code} {response.reason}")
@@ -344,8 +389,8 @@ elif page == "Tab 4 - ML Operations Dashboard":
     model_info = {
         "Name": "Steel Fault Predictor",
         "Algorithm": "LightGBM",
-        "Version": MODEL_VERSION,
-        "Training Date": datetime.utcnow().strftime("%Y-%m-%d"),
+        "Version": f"Default={MODEL_VERSION} (Tab 1 hard-coded={TAB1_MODEL_VERSION})",
+        "Training Date": datetime.now(UTC).strftime("%Y-%m-%d"),
         "Training Samples": "from train_processed.csv",
         "Features": "6 engineered",
     }
@@ -391,6 +436,7 @@ elif page == "Tab 4 - ML Operations Dashboard":
         ignore_index=True,
     )
     combined["timestamp"] = pd.to_datetime(combined["timestamp"], errors="coerce")
+    combined["confidence"] = pd.to_numeric(combined["confidence"], errors="coerce")
     combined["latency_ms"] = pd.to_numeric(combined["latency_ms"], errors="coerce")
     combined = combined.dropna(subset=["timestamp"])
 
@@ -426,12 +472,17 @@ elif page == "Tab 4 - ML Operations Dashboard":
         st.plotly_chart(latency_fig, use_container_width=True)
 
     st.markdown("### Prediction History")
-    history = combined.sort_values("timestamp", ascending=False).head(500)
+    full_history = combined.sort_values("timestamp", ascending=False)
+    history = full_history.head(500)
+    full_history_with_labels = full_history[full_history["true_label"].astype(str).str.len() > 0]
 
     filter_cols = st.columns(4)
-    default_date = (
-        history["timestamp"].max().date() if not history.empty else datetime.utcnow().date()
-    )
+    if not full_history_with_labels.empty:
+        default_date = full_history_with_labels["timestamp"].max().date()
+    elif not history.empty:
+        default_date = history["timestamp"].max().date()
+    else:
+        default_date = datetime.now(UTC).date()
     date_filter = filter_cols[0].date_input("Date", value=default_date)
     source_filter = filter_cols[1].selectbox(
         "Source", ["All"] + sorted(history["source"].astype(str).unique())
@@ -459,7 +510,25 @@ elif page == "Tab 4 - ML Operations Dashboard":
     st.markdown("### Confusion Matrix (Known Labels)")
     known = filtered[filtered["true_label"].astype(str).str.len() > 0]
     if known.empty:
-        st.info("No rows with known true labels for current filters.")
+        # Keep source/prediction/confidence filters, but ignore date when no labels exist on selected date.
+        fallback_known = full_history[full_history["true_label"].astype(str).str.len() > 0]
+        if source_filter != "All":
+            fallback_known = fallback_known[fallback_known["source"] == source_filter]
+        if prediction_filter != "All":
+            fallback_known = fallback_known[fallback_known["prediction"] == prediction_filter]
+        fallback_known = fallback_known[fallback_known["confidence"] >= min_conf]
+
+        if fallback_known.empty:
+            st.info("No rows with known true labels for current filters.")
+        else:
+            st.warning(
+                "No labeled rows for selected date. Showing confusion matrix from latest labeled rows "
+                "that match other filters."
+            )
+            conf = pd.crosstab(
+                fallback_known["true_label"], fallback_known["prediction"], dropna=False
+            )
+            st.dataframe(conf, use_container_width=True)
     else:
         conf = pd.crosstab(known["true_label"], known["prediction"], dropna=False)
         st.dataframe(conf, use_container_width=True)

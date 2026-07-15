@@ -62,6 +62,23 @@ Run batch/CLI prediction in one command:
 make predict
 ```
 
+Train model version 3 explicitly:
+
+```bash
+poetry run python -m ml_example.ml_training.pipeline.train --version 3.0
+```
+
+Model serving controls (FastAPI):
+
+- GET `/serving-model` to read active/default/supported versions
+- POST `/serving-model` with JSON `{ "version": "3.0" }` to switch served model
+
+Serving supports only two production model versions:
+
+- Registered model name: `steel_fault_predictor`
+- Version `2.0`
+- Version `3.0`
+
 ## Local MLflow Model Storage
 
 Train writes the model to local MLflow storage in `mlruns/`.
