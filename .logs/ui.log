@@ -5,21 +5,200 @@ Collecting usage statistics. To deactivate, set browser.gatherUsageStats to fals
   You can now view your Streamlit app in your browser.
 
   Local URL: http://localhost:8501
-  Network URL: http://10.0.1.207:8501
-  External URL: http://172.210.53.226:8501
+  Network URL: http://10.0.2.124:8501
+  External URL: http://172.203.190.243:8501
 
-2026-07-14 02:37:53.517 Please replace `use_container_width` with `width`.
+[LightGBM] [Fatal] Unknown model format or submodel type in model file /workspaces/streamlit-example/mlruns/159767488818864796/4bf7214cc6024c9b9abec5d83eb746ad/artifacts/model
+[31m──[0m[31m────────────────────────[0m[31m [0m[1;31mTraceback [0m[1;2;31m(most recent call last)[0m[31m [0m[31m─────────────────────────[0m[31m──[0m
+[31m [0m [2m/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/streamlit/runtime/s[0m [31m [0m
+[31m [0m [2mcriptrunner/[0m[1mexec_code.py[0m:129 in exec_func_with_error_handling                        [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2m/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/streamlit/runtime/s[0m [31m [0m
+[31m [0m [2mcriptrunner/[0m[1mscript_runner.py[0m:689 in code_to_exec                                     [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2m/workspaces/streamlit-example/ml_example/streamlit_app/[0m[1mapp.py[0m:569 in <module>        [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m566 [0m                                                                               [31m [0m
+[31m [0m   [2m567 [0m                                                                               [31m [0m
+[31m [0m   [2m568 [0m[94mif[0m [91m__name__[0m == [33m"[0m[33m__main__[0m[33m"[0m:                                                     [31m [0m
+[31m [0m [31m❱ [0m569 [2m│   [0m[1;4mrender_app()[0m                                                               [31m [0m
+[31m [0m   [2m570 [0m                                                                               [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2m/workspaces/streamlit-example/ml_example/streamlit_app/[0m[1mapp.py[0m:559 in render_app      [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m556 [0m[2m│   [0mdefaults = default_input_values(train_df)                                  [31m [0m
+[31m [0m   [2m557 [0m[2m│   [0m                                                                           [31m [0m
+[31m [0m   [2m558 [0m[2m│   [0m[94mif[0m page == [33m"[0m[33mTab 1 - Direct ML Prediction[0m[33m"[0m:                                 [31m [0m
+[31m [0m [31m❱ [0m559 [2m│   │   [0m[1;4mrender_tab1(defaults)[0m                                                  [31m [0m
+[31m [0m   [2m560 [0m[2m│   [0m[94melif[0m page == [33m"[0m[33mTab 2 - API ML Prediction[0m[33m"[0m:                                  [31m [0m
+[31m [0m   [2m561 [0m[2m│   │   [0mrender_tab2(defaults, api_base_url)                                    [31m [0m
+[31m [0m   [2m562 [0m[2m│   [0m[94melif[0m page == [33m"[0m[33mTab 3 - Signal Visualization[0m[33m"[0m:                               [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2m/workspaces/streamlit-example/ml_example/streamlit_app/[0m[1mapp.py[0m:247 in render_tab1     [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m244 [0m[2m│   [0mpayload = render_model_inputs([33m"[0m[33mt1[0m[33m"[0m, defaults)                              [31m [0m
+[31m [0m   [2m245 [0m[2m│   [0m                                                                           [31m [0m
+[31m [0m   [2m246 [0m[2m│   [0m[94mif[0m st.button([33m"[0m[33mPredict[0m[33m"[0m, key=[33m"[0m[33mtab1_predict[0m[33m"[0m):                               [31m [0m
+[31m [0m [31m❱ [0m247 [2m│   │   [0mresult = [1;4mpredict_fault_from_inputs([0m                                    [31m [0m
+[31m [0m   [2m248 [0m[2m│   │   │   [0m[1;4m**payload,[0m                                                         [31m [0m
+[31m [0m   [2m249 [0m[2m│   │   │   [0m[1;4msource=[0m[1;4;33m"[0m[1;4;33mUI[0m[1;4;33m"[0m[1;4m,[0m                                                       [31m [0m
+[31m [0m   [2m250 [0m[2m│   │   │   [0m[1;4mmodel_version=TAB1_MODEL_VERSION,[0m                                  [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2m/workspaces/streamlit-example/ml_example/ml_training/pipeline/[0m[1mpredict.py[0m:220 in      [31m [0m
+[31m [0m predict_fault_from_inputs                                                            [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m217 [0m[2m│   [0mmodel_version: [96mstr[0m = MODEL_VERSION,                                        [31m [0m
+[31m [0m   [2m218 [0m) -> [96mdict[0m[[96mstr[0m, [96mfloat[0m | [96mstr[0m]:                                                   [31m [0m
+[31m [0m   [2m219 [0m[2m│   [0mstart = perf_counter()                                                     [31m [0m
+[31m [0m [31m❱ [0m220 [2m│   [0mbundle = [1;4m_load_model(model_version=model_version)[0m                          [31m [0m
+[31m [0m   [2m221 [0m[2m│   [0mmodel = bundle[[33m"[0m[33mmodel[0m[33m"[0m]                                                    [31m [0m
+[31m [0m   [2m222 [0m[2m│   [0mmean_thickness = [96mfloat[0m(bundle[[33m"[0m[33mmean_thickness[0m[33m"[0m])                           [31m [0m
+[31m [0m   [2m223 [0m[2m│   [0mfeature_columns = [96mlist[0m(bundle[[33m"[0m[33mfeature_columns[0m[33m"[0m])                          [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2m/workspaces/streamlit-example/ml_example/ml_training/pipeline/[0m[1mpredict.py[0m:136 in      [31m [0m
+[31m [0m _load_model                                                                          [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m133 [0m[2m│   [0m                                                                           [31m [0m
+[31m [0m   [2m134 [0m[2m│   [0m[94mif[0m model [95mis[0m [94mNone[0m:                                                          [31m [0m
+[31m [0m   [2m135 [0m[2m│   │   [0mresolved_model_path = _resolve_model_path(info, model_path)            [31m [0m
+[31m [0m [31m❱ [0m136 [2m│   │   [0mmodel = [1;4mlgb.Booster(model_file=[0m[1;4;96mstr[0m[1;4m(resolved_model_path))[0m               [31m [0m
+[31m [0m   [2m137 [0m[2m│   [0m                                                                           [31m [0m
+[31m [0m   [2m138 [0m[2m│   [0m[94mreturn[0m {                                                                   [31m [0m
+[31m [0m   [2m139 [0m[2m│   │   [0m[33m"[0m[33mmodel[0m[33m"[0m: model,                                                        [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2m/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/lightgbm/[0m[1mbasic.py[0m:3 [31m [0m
+[31m [0m 697 in __init__                                                                      [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m3694 [0m[2m│   │   [0m[94melif[0m model_file [95mis[0m [95mnot[0m [94mNone[0m:                                          [31m [0m
+[31m [0m   [2m3695 [0m[2m│   │   │   [0m[2m# Prediction task[0m                                                 [31m [0m
+[31m [0m   [2m3696 [0m[2m│   │   │   [0mout_num_iterations = ctypes.c_int([94m0[0m)                              [31m [0m
+[31m [0m [31m❱ [0m3697 [2m│   │   │   [0m[1;4m_safe_call([0m                                                       [31m [0m
+[31m [0m   [2m3698 [0m[2m│   │   │   │   [0m[1;4m_LIB.LGBM_BoosterCreateFromModelfile([0m                         [31m [0m
+[31m [0m   [2m3699 [0m[2m│   │   │   │   │   [0m[1;4m_c_str([0m[1;4;96mstr[0m[1;4m(model_file)),[0m                                  [31m [0m
+[31m [0m   [2m3700 [0m[2m│   │   │   │   │   [0m[1;4mctypes.byref(out_num_iterations),[0m                         [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m [2m/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/lightgbm/[0m[1mbasic.py[0m:3 [31m [0m
+[31m [0m 13 in _safe_call                                                                     [31m [0m
+[31m [0m                                                                                      [31m [0m
+[31m [0m   [2m 310 [0m[2;33m│   │   [0m[33mThe return value from C API calls.[0m                                    [31m [0m
+[31m [0m   [2m 311 [0m[2;33m│   [0m[33m"""[0m                                                                       [31m [0m
+[31m [0m   [2m 312 [0m[2m│   [0m[94mif[0m ret != [94m0[0m:                                                              [31m [0m
+[31m [0m [31m❱ [0m 313 [2m│   │   [0m[1;4;94mraise[0m[1;4m LightGBMError(_LIB.LGBM_GetLastError().decode([0m[1;4;33m"[0m[1;4;33mutf-8[0m[1;4;33m"[0m[1;4m))[0m         [31m [0m
+[31m [0m   [2m 314 [0m                                                                              [31m [0m
+[31m [0m   [2m 315 [0m                                                                              [31m [0m
+[31m [0m   [2m 316 [0m[94mdef[0m [92m_is_numeric[0m(obj: Any) -> [96mbool[0m:                                            [31m [0m
+[31m────────────────────────────────────────────────────────────────────────────────────────[0m
+[1;91mLightGBMError: [0mUnknown model format or submodel type in model file 
+[35m/workspaces/streamlit-example/mlruns/159767488818864796/4bf7214cc6024c9b9abec5d83eb746ad[0m
+[35m/artifacts/[0m[95mmodel[0m
+2026-07-15 15:33:35.036 Please replace `use_container_width` with `width`.
 
 `use_container_width` will be removed after 2025-12-31.
 
 For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
-2026-07-14 02:37:53.531 Please replace `use_container_width` with `width`.
+2026-07-15 15:34:07.423 Please replace `use_container_width` with `width`.
 
 `use_container_width` will be removed after 2025-12-31.
 
 For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
-2026-07-14 02:37:53.541 Please replace `use_container_width` with `width`.
+2026-07-15 15:34:07.426 Please replace `use_container_width` with `width`.
 
 `use_container_width` will be removed after 2025-12-31.
 
 For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:35:36.733 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:35:36.916 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:35:37.111 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:42:15.507 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:42:15.509 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:43:39.139 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:43:54.290 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:43:54.291 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:43:56.756 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:43:56.768 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:43:56.779 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:44:05.219 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:44:05.295 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:44:05.358 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:44:11.250 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:44:11.264 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:44:11.270 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:44:19.907 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2026-07-15 15:44:19.909 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+  Stopping...

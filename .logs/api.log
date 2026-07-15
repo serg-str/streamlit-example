@@ -1,8 +1,68 @@
 INFO:     Will watch for changes in these directories: ['/workspaces/streamlit-example']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [20554] using WatchFiles
-INFO:     Started server process [20623]
+INFO:     Started reloader process [5097] using WatchFiles
+INFO:     Started server process [5164]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     127.0.0.1:53562 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:47380 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47752 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55096 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'ml_example/ml_training/pipeline/predict.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [5164]
+INFO:     Started server process [5935]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:36646 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36658 - "GET /serving-model HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59758 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59772 - "GET /serving-model HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59778 - "POST /predict HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42230 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42232 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49096 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49100 - "GET /serving-model HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49112 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58450 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51042 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51054 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'ml_example/ml_training/pipeline/predict.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [5935]
+INFO:     Started server process [9096]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     154.64.72.193:0 - "GET / HTTP/1.1" 404 Not Found
+INFO:     154.64.72.193:0 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     154.64.72.193:0 - "GET / HTTP/1.1" 404 Not Found
+INFO:     154.64.72.193:0 - "GET /docs HTTP/1.1" 200 OK
+INFO:     154.64.72.193:0 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     154.64.72.193:0 - "GET /serving-model HTTP/1.1" 200 OK
+INFO:     154.64.72.193:0 - "POST /serving-model HTTP/1.1" 400 Bad Request
+INFO:     154.64.72.193:0 - "POST /serving-model HTTP/1.1" 200 OK
+INFO:     154.64.72.193:0 - "GET /serving-model HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41356 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41360 - "GET /serving-model HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41372 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41374 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41384 - "GET /serving-model HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41390 - "POST /predict HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55324 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45606 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45622 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45634 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41078 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41094 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41106 - "GET /serving-model HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41108 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41116 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41128 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46720 - "GET /train-data?limit=50000 HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [9096]
+INFO:     Stopping reloader process [5097]

@@ -88,6 +88,36 @@ def _resolve_model_path(info: dict[str, object], default_model_path: Path) -> Pa
     return default_model_path
 
 
+def _resolve_lightgbm_model_file(path: Path) -> Path:
+    if path.is_file():
+        return path
+
+    if not path.exists():
+        raise FileNotFoundError(f"Model path does not exist: {path}")
+
+    if path.is_dir():
+        # Common MLflow LightGBM artifact layout: <artifact>/model.lgb
+        preferred = path / "model.lgb"
+        if preferred.exists() and preferred.is_file():
+            return preferred
+
+        # Fallback for non-standard exports that still keep a single LightGBM file.
+        candidates = sorted(path.glob("*.lgb"))
+        if not candidates:
+            candidates = sorted(path.glob("*.txt"))
+        if len(candidates) == 1:
+            return candidates[0]
+
+        if candidates:
+            names = ", ".join(str(candidate) for candidate in candidates)
+            raise ValueError(f"Multiple model files found under {path}: {names}")
+
+    raise ValueError(
+        "Unable to locate a LightGBM model file. "
+        f"Resolved model path was: {path}"
+    )
+
+
 def preprocess_input_features(inputs: dict[str, float], mean_thickness: float) -> dict[str, float]:
     x_range = inputs["X_Maximum"] - inputs["X_Minimum"]
     y_range = inputs["Y_Maximum"] - inputs["Y_Minimum"]
@@ -133,7 +163,8 @@ def _load_model(model_version: str = MODEL_VERSION):
 
     if model is None:
         resolved_model_path = _resolve_model_path(info, model_path)
-        model = lgb.Booster(model_file=str(resolved_model_path))
+        resolved_model_file = _resolve_lightgbm_model_file(resolved_model_path)
+        model = lgb.Booster(model_file=str(resolved_model_file))
 
     return {
         "model": model,

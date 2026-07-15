@@ -17,11 +17,9 @@ PREDICTION_LOG_PATH = Path("ml_example/reports/prediction_logs.csv")
 TRAINING_PREDICTIONS_PATH = Path("ml_example/reports/training_predictions.csv")
 VISUALIZATION_DIR = Path("ml_example/visualization")
 
-st.set_page_config(page_title="ML Architecture Demo", layout="wide")
-st.title("ML Deployment Architecture Demo")
-st.caption("Using raw steel fault train dataset with feature engineering")
-
-
+# -----------------------------------------------------------------------------
+# Non-Streamlit helpers
+# -----------------------------------------------------------------------------
 def load_prediction_logs(path: Path) -> pd.DataFrame:
     columns = ["timestamp", "source", "prediction", "confidence", "true_label", "latency_ms"]
     if not path.exists():
@@ -116,7 +114,58 @@ def default_input_values(df: pd.DataFrame) -> dict[str, float]:
     }
 
 
-def model_inputs(key_prefix: str, defaults: dict[str, float]) -> dict[str, float]:
+def load_training_predictions(path: Path) -> pd.DataFrame:
+    if not path.exists():
+        return pd.DataFrame(
+            columns=[
+                "timestamp",
+                "source",
+                "prediction",
+                "confidence",
+                "target_label",
+                "true_label",
+                "latency_ms",
+            ]
+        )
+    return pd.read_csv(path)
+
+
+def combine_prediction_history(
+    prediction_logs: pd.DataFrame, training_predictions: pd.DataFrame
+) -> pd.DataFrame:
+    if "true_label" not in prediction_logs.columns:
+        prediction_logs["true_label"] = ""
+    if "latency_ms" not in prediction_logs.columns:
+        prediction_logs["latency_ms"] = ""
+
+    if "target_label" in training_predictions.columns:
+        training_predictions["true_label"] = training_predictions["target_label"].astype(str)
+    elif "true_label" not in training_predictions.columns:
+        training_predictions["true_label"] = ""
+    if "latency_ms" not in training_predictions.columns:
+        training_predictions["latency_ms"] = ""
+
+    combined = pd.concat(
+        [
+            prediction_logs[
+                ["timestamp", "source", "prediction", "confidence", "true_label", "latency_ms"]
+            ],
+            training_predictions[
+                ["timestamp", "source", "prediction", "confidence", "true_label", "latency_ms"]
+            ],
+        ],
+        ignore_index=True,
+    )
+    combined["timestamp"] = pd.to_datetime(combined["timestamp"], errors="coerce")
+    combined["confidence"] = pd.to_numeric(combined["confidence"], errors="coerce")
+    combined["latency_ms"] = pd.to_numeric(combined["latency_ms"], errors="coerce")
+    return combined.dropna(subset=["timestamp"])
+
+
+# -----------------------------------------------------------------------------
+# Streamlit rendering helpers
+# -----------------------------------------------------------------------------
+def render_model_inputs(key_prefix: str, defaults: dict[str, float]) -> dict[str, float]:
     st.markdown("### Input Features")
     col1, col2 = st.columns(2)
 
@@ -189,32 +238,10 @@ def model_inputs(key_prefix: str, defaults: dict[str, float]) -> dict[str, float
     }
 
 
-st.sidebar.header("Pages")
-page = st.sidebar.radio(
-    "Select a page",
-    [
-        "Tab 1 - Direct ML Prediction",
-        "Tab 2 - API ML Prediction",
-        "Tab 3 - Signal Visualization",
-        "Tab 4 - ML Operations Dashboard",
-    ],
-)
-
-st.sidebar.header("API Settings")
-api_base_url = st.sidebar.text_input("FastAPI Base URL", value=DEFAULT_API_BASE_URL)
-
-try:
-    train_df = load_train_data_from_api(api_base_url)
-except (requests.RequestException, ValueError) as exc:
-    st.error(f"Unable to load train data from FastAPI: {exc}")
-    st.stop()
-
-defaults = default_input_values(train_df)
-
-if page == "Tab 1 - Direct ML Prediction":
+def render_tab1(defaults: dict[str, float]) -> None:
     st.subheader("Direct ML Prediction (Streamlit Only)")
     st.info(f"Model version for Tab 1: {TAB1_MODEL_VERSION}")
-    payload = model_inputs("t1", defaults)
+    payload = render_model_inputs("t1", defaults)
 
     if st.button("Predict", key="tab1_predict"):
         result = predict_fault_from_inputs(
@@ -242,7 +269,8 @@ if page == "Tab 1 - Direct ML Prediction":
             st.dataframe(probs_df, hide_index=True, use_container_width=True)
             st.bar_chart(probs_df.set_index("Class")["Probability"])
 
-elif page == "Tab 2 - API ML Prediction":
+
+def render_tab2(defaults: dict[str, float], api_base_url: str) -> None:
     st.subheader("API ML Prediction (Streamlit + FastAPI)")
     st.caption("Streamlit calls FastAPI /predict over HTTP")
 
@@ -256,8 +284,10 @@ elif page == "Tab 2 - API ML Prediction":
         versions = [str(item) for item in serving_state.get("supported_versions", [])]
         active_version = str(serving_state.get("active_version", MODEL_VERSION))
         st.write(f"Current FastAPI served model version: {active_version}")
+        if versions:
+            st.caption(f"Supported versions: {', '.join(versions)}")
 
-    payload = model_inputs("t2", defaults)
+    payload = render_model_inputs("t2", defaults)
     if st.button("Call Prediction API", key="tab2_predict"):
         start = perf_counter()
         try:
@@ -285,7 +315,8 @@ elif page == "Tab 2 - API ML Prediction":
         except requests.RequestException as exc:
             st.error(f"API call failed: {exc}")
 
-elif page == "Tab 3 - Signal Visualization":
+
+def render_tab3(train_df: pd.DataFrame) -> None:
     st.subheader("Signal Visualization Dashboard")
     VISUALIZATION_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -382,7 +413,8 @@ elif page == "Tab 3 - Signal Visualization":
             )
             st.plotly_chart(corr_fig, use_container_width=True)
 
-elif page == "Tab 4 - ML Operations Dashboard":
+
+def render_tab4() -> None:
     st.subheader("ML Operations Dashboard")
 
     st.markdown("### Model Information")
@@ -397,48 +429,8 @@ elif page == "Tab 4 - ML Operations Dashboard":
     st.table(pd.DataFrame(model_info.items(), columns=["Field", "Value"]))
 
     prediction_logs = load_prediction_logs(PREDICTION_LOG_PATH)
-    training_predictions = (
-        pd.read_csv(TRAINING_PREDICTIONS_PATH)
-        if TRAINING_PREDICTIONS_PATH.exists()
-        else pd.DataFrame(
-            columns=[
-                "timestamp",
-                "source",
-                "prediction",
-                "confidence",
-                "target_label",
-                "true_label",
-                "latency_ms",
-            ]
-        )
-    )
-
-    if "true_label" not in prediction_logs.columns:
-        prediction_logs["true_label"] = ""
-    if "latency_ms" not in prediction_logs.columns:
-        prediction_logs["latency_ms"] = ""
-    if "target_label" in training_predictions.columns:
-        training_predictions["true_label"] = training_predictions["target_label"].astype(str)
-    elif "true_label" not in training_predictions.columns:
-        training_predictions["true_label"] = ""
-    if "latency_ms" not in training_predictions.columns:
-        training_predictions["latency_ms"] = ""
-
-    combined = pd.concat(
-        [
-            prediction_logs[
-                ["timestamp", "source", "prediction", "confidence", "true_label", "latency_ms"]
-            ],
-            training_predictions[
-                ["timestamp", "source", "prediction", "confidence", "true_label", "latency_ms"]
-            ],
-        ],
-        ignore_index=True,
-    )
-    combined["timestamp"] = pd.to_datetime(combined["timestamp"], errors="coerce")
-    combined["confidence"] = pd.to_numeric(combined["confidence"], errors="coerce")
-    combined["latency_ms"] = pd.to_numeric(combined["latency_ms"], errors="coerce")
-    combined = combined.dropna(subset=["timestamp"])
+    training_predictions = load_training_predictions(TRAINING_PREDICTIONS_PATH)
+    combined = combine_prediction_history(prediction_logs, training_predictions)
 
     st.markdown("### Prediction Metrics")
     prediction_total = int(len(combined))
@@ -510,7 +502,8 @@ elif page == "Tab 4 - ML Operations Dashboard":
     st.markdown("### Confusion Matrix (Known Labels)")
     known = filtered[filtered["true_label"].astype(str).str.len() > 0]
     if known.empty:
-        # Keep source/prediction/confidence filters, but ignore date when no labels exist on selected date.
+        # Keep source/prediction/confidence filters, but ignore date
+        # when no labels exist on selected date.
         fallback_known = full_history[full_history["true_label"].astype(str).str.len() > 0]
         if source_filter != "All":
             fallback_known = fallback_known[fallback_known["source"] == source_filter]
@@ -522,7 +515,8 @@ elif page == "Tab 4 - ML Operations Dashboard":
             st.info("No rows with known true labels for current filters.")
         else:
             st.warning(
-                "No labeled rows for selected date. Showing confusion matrix from latest labeled rows "
+                "No labeled rows for selected date. "
+                "Showing confusion matrix from latest labeled rows "
                 "that match other filters."
             )
             conf = pd.crosstab(
@@ -532,3 +526,44 @@ elif page == "Tab 4 - ML Operations Dashboard":
     else:
         conf = pd.crosstab(known["true_label"], known["prediction"], dropna=False)
         st.dataframe(conf, use_container_width=True)
+
+
+def render_app() -> None:
+    st.set_page_config(page_title="ML Architecture Demo", layout="wide")
+    st.title("ML Deployment Architecture Demo")
+    st.caption("Using raw steel fault train dataset with feature engineering")
+
+    st.sidebar.header("Pages")
+    page = st.sidebar.radio(
+        "Select a page",
+        [
+            "Tab 1 - Direct ML Prediction",
+            "Tab 2 - API ML Prediction",
+            "Tab 3 - Signal Visualization",
+            "Tab 4 - ML Operations Dashboard",
+        ],
+    )
+
+    st.sidebar.header("API Settings")
+    api_base_url = st.sidebar.text_input("FastAPI Base URL", value=DEFAULT_API_BASE_URL)
+
+    try:
+        train_df = load_train_data_from_api(api_base_url)
+    except (requests.RequestException, ValueError) as exc:
+        st.error(f"Unable to load train data from FastAPI: {exc}")
+        st.stop()
+
+    defaults = default_input_values(train_df)
+
+    if page == "Tab 1 - Direct ML Prediction":
+        render_tab1(defaults)
+    elif page == "Tab 2 - API ML Prediction":
+        render_tab2(defaults, api_base_url)
+    elif page == "Tab 3 - Signal Visualization":
+        render_tab3(train_df)
+    elif page == "Tab 4 - ML Operations Dashboard":
+        render_tab4()
+
+
+if __name__ == "__main__":
+    render_app()
