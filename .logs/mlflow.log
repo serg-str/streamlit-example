@@ -1,7 +1,38 @@
-[2026-07-15 15:31:48 +0000] [5282] [INFO] Starting gunicorn 23.0.0
-[2026-07-15 15:31:48 +0000] [5282] [INFO] Listening at: http://0.0.0.0:5000 (5282)
-[2026-07-15 15:31:48 +0000] [5282] [INFO] Using worker: sync
-[2026-07-15 15:31:48 +0000] [5291] [INFO] Booting worker with pid: 5291
-[2026-07-15 15:31:48 +0000] [5292] [INFO] Booting worker with pid: 5292
-[2026-07-15 15:31:48 +0000] [5293] [INFO] Booting worker with pid: 5293
-[2026-07-15 15:31:48 +0000] [5294] [INFO] Booting worker with pid: 5294
+[2026-07-15 19:55:37 +0000] [10940] [INFO] Starting gunicorn 23.0.0
+[2026-07-15 19:55:37 +0000] [10940] [ERROR] Connection in use: ('0.0.0.0', 5000)
+[2026-07-15 19:55:37 +0000] [10940] [ERROR] connection to ('0.0.0.0', 5000) failed: [Errno 98] Address already in use
+[2026-07-15 19:55:38 +0000] [10940] [ERROR] Connection in use: ('0.0.0.0', 5000)
+[2026-07-15 19:55:38 +0000] [10940] [ERROR] connection to ('0.0.0.0', 5000) failed: [Errno 98] Address already in use
+[2026-07-15 19:55:39 +0000] [1094[2026-07-15 20:21:01 +0000] [5382] [CRITICAL] WORKER TIMEOUT (pid:5404)
+[2026-07-15 20:21:01 +0000] [5404] [ERROR] Error handling request (no URI read)
+Traceback (most recent call last):
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/gunicorn/workers/sync.py", line 133, in handle
+    req = next(parser)
+          ^^^^^^^^^^^^
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/gunicorn/http/parser.py", line 41, in __next__
+    self.mesg = self.mesg_class(self.cfg, self.unreader, self.source_addr, self.req_count)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/gunicorn/http/message.py", line 259, in __init__
+    super().__init__(cfg, unreader, peer_addr)
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/gunicorn/http/message.py", line 60, in __init__
+    unused = self.parse(self.unreader)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/gunicorn/http/message.py", line 274, in parse
+    line, rbuf = self.read_line(unreader, buf, self.limit_request_line)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/gunicorn/http/message.py", line 326, in read_line
+    self.get_data(unreader, buf)
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/gunicorn/http/message.py", line 262, in get_data
+    data = unreader.read()
+           ^^^^^^^^^^^^^^^
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/gunicorn/http/unreader.py", line 36, in read
+    d = self.chunk()
+        ^^^^^^^^^^^^
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/gunicorn/http/unreader.py", line 63, in chunk
+    return self.sock.recv(self.mxchunk)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/streamlit-example/.venv/lib/python3.11/site-packages/gunicorn/workers/base.py", line 204, in handle_abort
+    sys.exit(1)
+SystemExit: 1
+[2026-07-15 20:21:01 +0000] [5404] [INFO] Worker exiting (pid: 5404)
+[2026-07-15 20:21:01 +0000] [17884] [INFO] Booting worker with pid: 17884

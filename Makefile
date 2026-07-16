@@ -16,8 +16,8 @@ run-ui:
 
 local-up:
 	mkdir -p $(LOCAL_LOG_DIR)
-	nohup env PYTHONPATH=. poetry run uvicorn ml_example.fastapi_app.main:app --reload --host 0.0.0.0 --port 8000 > $(LOCAL_LOG_DIR)/api.log 2>&1 &
-	nohup env PYTHONPATH=. poetry run streamlit run ml_example/streamlit_app/app.py --server.port 8501 > $(LOCAL_LOG_DIR)/ui.log 2>&1 &
+	nohup env PYTHONPATH=. /usr/local/py-utils/bin/poetry run uvicorn ml_example.fastapi_app.main:app --reload --host 0.0.0.0 --port 8000 > $(LOCAL_LOG_DIR)/api.log 2>&1 &
+	nohup env PYTHONPATH=. /usr/local/py-utils/bin/poetry run streamlit run ml_example/streamlit_app/app.py --server.port 8501 > $(LOCAL_LOG_DIR)/ui.log 2>&1 &
 	@echo "API: http://localhost:8000"
 	@echo "UI: http://localhost:8501"
 
@@ -26,7 +26,7 @@ local-down:
 	-pkill -f "streamlit run ml_example/streamlit_app/app.py --server.port 8501"
 
 local-up-all: local-up
-	nohup poetry run mlflow ui --backend-store-uri ./mlruns --host 0.0.0.0 --port 5000 > $(LOCAL_LOG_DIR)/mlflow.log 2>&1 &
+	nohup /usr/local/py-utils/bin/poetry run mlflow ui --backend-store-uri ./mlruns --host 0.0.0.0 --port 5000 > $(LOCAL_LOG_DIR)/mlflow.log 2>&1 &
 	@echo "MLflow: http://localhost:5000"
 
 local-down-all:

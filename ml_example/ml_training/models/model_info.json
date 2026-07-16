@@ -27,7 +27,6 @@
   "mlflow_tracking_uri": "file:///workspaces/streamlit-example/mlruns",
   "mlflow_experiment": "steel-fault-predictor",
   "mlflow_run_id": "4bf7214cc6024c9b9abec5d83eb746ad",
-  "model_artifact_uri": "file:///workspaces/streamlit-example/mlruns/159767488818864796/4bf7214cc6024c9b9abec5d83eb746ad/artifacts/model",
   "mlflow_registered_model_name": "steel_fault_predictor",
   "mlflow_registered_model_alias": "version_2_0",
   "mlflow_registered_model_version": "2",
